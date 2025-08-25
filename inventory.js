@@ -5,7 +5,7 @@ if (inventoryTable) {
         html += "<td>";
         for (let row = 0; row < 10; row++) {
             const slot = col * 10 + row;
-            html += `<button id="slot${slot}"></button>`;
+            html += `<button id="slot${slot}" draggable="true"></button>`;
         }
         html += "</td>";
     }
