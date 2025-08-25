@@ -1,29 +1,32 @@
 let time = 0;
-let maxTime = 10;
+let maxTime = 1;
 let action = null;
 let htmlThings = [
     `You see a forest of oak trees up ahead. There's a large poplar tree covering a bridge to get there.
     There's a small mound of dirt here and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
 
     <div>
-    <button onclick="switchAction('dirt')">Dig the mound</button>
-    <button onclick="switchAction('chop')">Chop a balsa tree</button>
-    <button onclick="switchAction('chop')">Chop the large poplar tree</button></div>`,
+    <button onclick="switchAction('dirt',1)">Dig the mound</button>
+    <button onclick="switchAction('chop',4)">Chop a balsa tree</button>
+    <button onclick="switchAction('chop',7)">Chop the large poplar tree</button>
+    <button onclick="switchAction('mine',1200)">Mine some stone (with fists)</button></div>`,
 
     `There's just a small forest. There's a man chopping wood here.<br>
-    <button onclick="alert('You dig into the ferest and find nothing!')">Dig</button>
+    <button onclick="switchAction('dirt',2)">Dig</button>
+    <button onclick="switchAction('chop',3)">Chop the poplar tree</button>
     <button onclick="fightFarmer()" class="fight">Attack!</button>`,
 ], inventory = [];
 for(var i=0; i<60; i++) inventory.push(["empty", 0]);
 
-function switchAction(type) {
+function switchAction(type,timed=1) {
     action = type;
     time = 0;
+    maxTime = timed;
 }
 
 function fightFarmer() {
     alert("you fight very hard.. and get injured, and ran. But you pickpocketed him while you ran away.");
-    addItem("gold", 1)
+    addItem("coin", 1)
 }
 function updateInventory() {
     for(let i=0; i<60; i++) {
@@ -33,7 +36,16 @@ function updateInventory() {
         if(inventory[i][0] === "empty") {
             slot.innerHTML = "";
         } else {
-            slot.innerHTML = `${inventory[i][1]} ${inventory[i][0]}`;
+            slot.innerHTML = "";
+            // Create an img element
+            const img = document.createElement('img');
+            img.src = `assets/${inventory[i][0]}.png`; 
+            img.alt = inventory[i][0];
+            img.width = 32;
+            slot.appendChild(img);
+
+            const text = document.createTextNode(inventory[i][1]);
+            slot.appendChild(text);
         }
     }
 }
@@ -52,16 +64,20 @@ function addItem(type, amount) {
     updateInventory();
 }
 function digDirt() {
-    maxTime = 2;
     let gain = Math.ceil(Math.random() * 3);
     addItem("dirt", gain);
 
     updateInventory();
 }
 function chop() {
-    maxTime = 4;
     let gain = Math.ceil(Math.random() * 2);
-    addItem("wood", gain);
+    addItem("log", gain);
+
+    updateInventory();
+}
+function mine() {
+    let gain = 9999;
+    addItem("stone", gain);
 
     updateInventory();
 }
@@ -72,6 +88,9 @@ function doAction(type) {
             break;
         case "chop":
             chop();
+            break;
+        case "mine":
+            mine();
             break;
         default:
             alert("Buggy buggy! Report this to the devs!");
