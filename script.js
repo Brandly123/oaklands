@@ -1,13 +1,14 @@
 let time = 0;
 let maxTime = 10;
+let action = null;
 let htmlThings = [
     `You see a forest of oak trees up ahead. There's a large poplar tree covering a bridge to get there.
     There's a small mound of dirt here and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
 
     <div>
-    <button onclick="digDirt()">Dig the mound</button>
-    <button onclick="digDirt()">Chop a balsa tree</button>
-    <button onclick="digDirt()">Chop the large poplar tree</button></div>`,
+    <button onclick="switchAction('dirt')">Dig the mound</button>
+    <button onclick="switchAction('chop')">Chop a balsa tree</button>
+    <button onclick="switchAction('chop')">Chop the large poplar tree</button></div>`,
 
     `There's just a small forest. There's a man chopping wood here.<br>
     <button onclick="alert('You dig into the ferest and find nothing!')">Dig</button>
@@ -15,14 +16,14 @@ let htmlThings = [
 ], inventory = [];
 for(var i=0; i<60; i++) inventory.push(["empty", 0]);
 
+function switchAction(type) {
+    action = type;
+    time = 0;
+}
+
 function fightFarmer() {
-    if(document.getElementById('slot1').innerHTML == "1 gold") {
-        alert("The farmer looks like he's already dead.");
-        return;
-    } else {
-        document.getElementById('slot1').innerHTML = `1 gold`;
-        alert("The farmer has one gold on him! You take it.");
-    }
+    alert("you fight very hard.. and get injured, and ran. But you pickpocketed him while you ran away.");
+    addItem("gold", 1)
 }
 function updateInventory() {
     for(let i=0; i<60; i++) {
@@ -37,24 +38,45 @@ function updateInventory() {
     }
 }
 
-function digDirt() {
-    let gain = Math.ceil(Math.random() * 3);
-    let slot = inventory.find(item => item[0] === "dirt");
-console.log(slot);
+function addItem(type, amount) {
+    let slot = inventory.find(item => item[0] === type);
 
     if(slot) {
-        //alert(`You dig into the mound.. and find ${gain} dirt!`);
-        slot[1] += gain;
+        slot[1] += amount;
     } else {
         let empty = inventory.findIndex(item => item[0] === "empty")
         
-        if (empty !== null) {
-            //alert(`You dig into the mound.. and find ${gain+1} dirt!`);
-            inventory[empty] = ["dirt", gain+1];
-        }// else alert('You find some dirt, but your inventory is full.');
+        if (empty !== null) inventory[empty] = [type, amount];
     }
 
     updateInventory();
+}
+function digDirt() {
+    maxTime = 2;
+    let gain = Math.ceil(Math.random() * 3);
+    addItem("dirt", gain);
+
+    updateInventory();
+}
+function chop() {
+    maxTime = 4;
+    let gain = Math.ceil(Math.random() * 2);
+    addItem("wood", gain);
+
+    updateInventory();
+}
+function doAction(type) {
+    switch(type) {
+        case "dirt":
+            digDirt();
+            break;
+        case "chop":
+            chop();
+            break;
+        default:
+            alert("Buggy buggy! Report this to the devs!");
+            break;
+    }
 }
 
 function tabButtonPressed(id) {
@@ -86,13 +108,15 @@ setInterval(() => {
     const deltaTime = (currentTime - previousTime) / 1000; // seconds elapsed
     previousTime = currentTime;
 
+    if(action === null) return;
+
     if(progress >= 1) {
         time = 0;
-        digDirt();
+        doAction(action);
     }
 
     setProgress(progress);
     time += deltaTime;
     progress = time/maxTime;
     if (progress > 1) clearInterval(interval);
-}, 50);
+}, 50)
