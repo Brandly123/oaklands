@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Work Sans", sans-serif;
+    transition: all 0.2s ease-in-out;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+h1, h2 {
+    margin: 4px;
+}
+
+table {
+    border: 1px solid black;
+    height: 100%;
+    width: 100%;
+}
+td {
+    height: 40%;
+}
+
+
+#tabContainer {
+    background-color: #E0E0E0;
+    width: 15%;
+    vertical-align: top;
+    text-align: center;
+    padding: 2px 0;
+}
+
+#tabContainer button {
+    background-color: #C7C7C7;
+    border: 0;
+    width: 97%;
+    min-height: 35px;
+    margin: 2px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#tabContainer button:hover, #tabContainer button.active {
+    background-color: #BBBBBB;
+}
+
+button {
+    background-color: #E0E0E0;
+    width: 50%;
+    min-height: 30px;
+    margin: 3px;
+    padding: 2px;
+    border-radius: 2px;
+}
+button:hover {
+    background-color: #C7C7C7;
+}
+
+#mainContainer {
+    width: 60%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    vertical-align: top; 
+    padding: 10px;
+}
+#mainContainer button {
+    margin: 2px;
+    min-height: 35px;
+}
+
+#sideContainer {
+    background-color: #E0E0E0;
+    width: 25%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    vertical-align: top; 
+}
+#inventoryTitle {
+    text-align: center;
+}
+
+#inventory {
+    border-collapse: collapse;
+    border: none;
+}
+#inventory td {
+    vertical-align: top;
+}
+#inventory button {
+    width: 95%;
+    height: 55px;
+    border-radius: 5px;
+}
+
+.fight {
+    background-color: red;
+}
+
+
+
+#progressBar {
+    width: 98%;
+    text-align: center;
+    background-color: #ddd;
+    height: 25px;
+    display: block;
+    margin: 5px auto;
+    border-radius: 10px;
+}
+#progress {
+    height: 100%;
+    width: 10%;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
