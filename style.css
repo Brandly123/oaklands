@@ -3,7 +3,7 @@
 * {
     font-family: "Work Sans", sans-serif;
     transition: all 0.1s ease-in-out;
-    /*outline: 2px solid purple;*/
+    outline: 1px solid purple;
 }
 
 html, body {
@@ -24,7 +24,6 @@ table {
 td {
     height: 40%;
 }
-
 
 #tabContainer {
     background-color: #E0E0E0;
@@ -74,13 +73,11 @@ button:hover {
 
 #sideContainer {
     background-color: #E0E0E0;
-    width: 25%;
-    overflow-y: auto;
+    width: 600px;
+    height: 650px;
+    overflow-y: scroll;
     overflow-x: hidden;
-    vertical-align: top; 
-}
-#inventoryTitle {
-    text-align: center;
+    vertical-align: top;
 }
 
 #inventory {
@@ -97,14 +94,27 @@ button:hover {
     padding: 1px;
     margin: 1px;
 }
+#inventoryTabs {
+    border-collapse: collapse;
+    border: none;
+    text-align: center;
+    height: 55px;
+}
+
+#inventoryTabs button {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    overflow: hidden;
+    text-align: center;
+}
 
 .fight {
     background-color: red;
 }
 
-
-
 #progressBar {
+    position: relative;
     width: 99%;
     text-align: center;
     background-color: #ddd;
@@ -125,13 +135,54 @@ button:hover {
 
     transition: all 0.1s;
 }
+#progressText {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: max-content;
+    text-align: center;
+    pointer-events: none;
+    font-size: 12px;
+}
 
 #infoContainer {
     background-color: #E0E0E0;
     width: 100%;
-    height: 40px;
+    max-height: 300px;
     overflow-y: hidden;
     overflow-x: hidden;
     vertical-align: top; 
     padding: 4px;
+}
+
+
+
+.expBarContainer {
+    margin-top:4px; 
+    width: 90%; 
+    height: 24px; 
+    background: #ccc; 
+    border-radius: 8px; 
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.expBar {
+    height: 100%; 
+    width: 40%; 
+    background: linear-gradient(90deg, #4caf50, #8bc34a); 
+    border-radius: 8px;
+}
+.expBarText {
+    position: absolute; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%); 
+    color: #222; 
+    font-weight: bold;
+    pointer-events: none;
+    user-select: none;
 }

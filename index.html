@@ -11,38 +11,91 @@
     <script src="inventoryDrag.js" defer></script>
 </head>
 <body>
-    
     <div id="progressBar">
             <div id="progress"></div>
+            <div id="progressText">Hello World!</div>
     </div>
     <table>
         <tr>
             <td id="tabContainer">
                 <button onClick="tabButtonPressed(0)">Oakland Fields</button>
                 <button onClick="tabButtonPressed(1)">Oakland Woods</button>
+                <button onClick="tabButtonPressed(2)">Settings</button>
             </td>
 
             <td id="mainContainer"></td>
 
             <td id="sideContainer">
-                <h2 id="inventoryTitle">Inventory</h2>
-                <table id="inventory"></table>
+                <table id="inventoryTabs">
+                    <tr>
+                        <td><button onclick="switchInventoryTab('inventorys')">
+                            <img src="assets/tabs/Inventory.png", width="50px">
+                        </button></td>
+                        <td><button onclick="switchInventoryTab('experience')">
+                            <img src="assets/tabs/Experience.png", width="50px">
+                        </button></td>
+                        <td><button onclick="switchInventoryTab('equipment')">
+                            <img src="assets/tabs/Equipment.png", width="50px">
+                        </button></td>
+                        <td><button onclick="switchInventoryTab('crafting')">
+                            <img src="assets/tabs/Crafting.png", width="50px">
+                        </button></td>
+                    </tr>
+                </table>
+                <div id="inventorys" class="inventoryTab">
+                    <table id="inventory"></table>
+                </div>
+                <div id="experience" class="inventoryTab">
+                    <h2>Experience</h2>
+                    <em>placeholder. this doesnt do anything.</em><br><br>
+
+                     <div class="expBarContainer" id="woodcutting">
+                        <div class="expBar"></div>
+                        <span class="expBarText">Woodcutting lvl 1</span>
+                    </div>
+                     <div class="expBarContainer" id="mining">
+                        <div class="expBar"></div>
+                        <span class="expBarText">Mining lvl 1</span>
+                    </div>
+                </div>
+                <div id="equipment" class="inventoryTab">
+                    <h2>Equipment</h2>
+                    <em>placeholder. this doesnt do anything.</em>
+                </div>
+                <div id="crafting" class="inventoryTab">
+                    <h2>Crafting</h2>
+                    <em>placeholder. this doesnt do anything.</em>
+
+                    <table>
+                        <tr>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><img src="assets/stone axe.png" width="200px"></td>
+                        </tr>
+                    </table>
+                </div>
             </td>
         </tr>
         <tr>
             <td id="infoContainer" colspan="3">
-                Gwinfo stuff<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
-                Blah<br>
+                asd
             </td>
         </tr>
     </table>

@@ -1,28 +1,47 @@
 let time = 0;
 let maxTime = 1;
 let action = null;
+let actionDescription = "";
 let htmlThings = [
-    `You see a forest of oak trees up ahead. There's a large poplar tree covering a bridge to get there.
-    There's a small mound of dirt here and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
+    `You see a forest of poplar trees up ahead. There's a large poplar tree covering a bridge to get there.
+    There's a small, rocky mound and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
 
     <div>
-    <button onclick="switchAction('dirt','mining',1)">Dig the mound</button>
+    <button onclick="switchAction('dirt','mining',0.01)">Dig the mound</button>
     <button onclick="switchAction('chop','woodcutting',4)">Chop a balsa tree</button>
+        <br><br>
     <button onclick="switchAction('chop2','woodcutting',7)">Chop the large poplar tree</button>
-    <button onclick="switchAction('mine','mining',12)">Mine some stone</button></div>`,
+    `,
 
-    `There's just a small forest. There's a man chopping wood here.<br>
+    `This seems to be a forest. Looking around, you see some poplar trees and stone. There's a strange farmer-looking person sitting on the ground.
+    There's a sign near the farmer that says 'FREE PICKAXE HERE' (Placeholder). There's also a stream with what seems to be a small town up ahead,
+    but the bridge seems to be broken.<br><br>
     <button onclick="switchAction('chop2','woodcutting',4)">Chop the poplar tree</button>
-<br>
-    <button onclick="switchAction('pickaxe','none',2)">Buy a pickaxe for free</button>
-    <button onclick="switchAction('axe','none',2)">Buy a pickaxe for free</button>
-
+    <button onclick="switchAction('mine','mining',12)">Mine some stone</button></div>
+        <br><br>
+    <button onclick="switchAction('pickaxe',null,2)">Buy a pickaxe for free</button>
+    <button onclick="switchAction('axe',null,2)">Buy a pickaxe for free</button>
+        <br><br>
+    <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge</button>
+        <br><br>
     <button onclick="fightFarmer()" class="fight">Attack!</button>`,
+    `Nothing here yet, except for a basic saving system<br><br>
+    <button onclick="exports()">Export Inventory</button>
+    <button onclick="imports()">Import Inventory</button> <textarea id="importArea" style="width:300px;"></textarea>
+    `
 ], inventory = [];
-for(var i=0; i<60; i++) inventory.push(["empty", 0]);
+for(var i=0; i<54; i++) inventory.push(["empty", 0]);
 //inventory[0] = ["stone axe", 1];
 
-function switchAction(act,type,timed=1) {
+function exports() {
+    document.getElementById("mainContainer").innerHTML = (btoa(JSON.stringify(inventory)))
+}
+function imports() {
+    inventory = JSON.parse(atob(document.getElementById("importArea").value));
+    updateInventory();
+}
+
+function switchAction(act,type,timed=1,actionDesc) {
     let item;
     switch(type) {
         case "woodcutting":
@@ -34,13 +53,17 @@ function switchAction(act,type,timed=1) {
         case "gathering":
             item = getBestItem("shears");
             break;
+        case "temporary":
+            break;
         default:
-            item = ["empty",1];
+            item = ["empty",0.6];
     }
 
-    if(!item) return alert(`You need a tool that can do ${type} to do this action.`);
+    if(!item && act != "dirt") return alert(`You need a tool that can do ${type} to do this action.`);
 
     action = act;
+    if(actionDesc) actionDescription = actionDesc;
+    else actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
     time = 0;
     maxTime = timed / item[1];
 }
@@ -65,7 +88,7 @@ function getBestItem(type) {
 }
 
 function updateInventory() {
-    for(let i=0; i<60; i++) {
+    for(let i=0; i<54; i++) {
         const slot = document.getElementById(`slot${i}`);
         
         if(inventory[i][0] === "empty") {
@@ -100,67 +123,37 @@ function addItem(type, amount) {
 
     updateInventory();
 }
-function digDirt() {
-    let gain = Math.ceil(Math.random() * 3);
-    addItem("dirt", gain);
-    addItem("stone", Math.floor(Math.random() * 1.1));
-
-    updateInventory();
+function rand(min,max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function chop() {
-    let gain = Math.ceil(Math.random() * 2);
-    addItem("balsa log", gain);
 
-    updateInventory();
-}
-function chop2() {
-    let gain = Math.ceil(Math.random() * 2);
-    addItem("poplar log", gain);
-
-    updateInventory();
-}
-function mine() {
-    let gain = Math.ceil(Math.random() * 4);
-    addItem("stone", gain);
-
-    updateInventory();
-}
-function pickaxe() {
-    let gain = 1;
-    addItem("stone pickaxe", gain);
-
-    updateInventory();
-}
-function axe() {
-    let gain = 1;
-    addItem("stone axe", gain);
-
-    updateInventory();
-}
 function doAction(type) {
     switch(type) {
         case "dirt":
-            digDirt();
+            addItem("dirt", rand(1,3));
+            addItem("stone", rand(0,0.4));
             break;
+
         case "chop":
-            chop();
-            break;
+            addItem("balsa log", rand(1,2)); break;
+
         case "chop2":
-            chop2();
-            break;
+            addItem("poplar log", rand(1,2)); break;
+
         case "mine":
-            mine();
-            break;
+            addItem("stone", rand(2,5)); break;
+
         case "pickaxe":
-            pickaxe();
-            break;
+            addItem("stone pickaxe", 1); break;
+
         case "axe":
-            axe();
-            break;
+            addItem("stone axe", 1); break;
+
         default:
-            alert("Buggy buggy! Report this to the devs!");
-            break;
+            alert("Game bugged: " + btoa(type)); break;
     }
+
+    updateInventory();
 }
 
 function tabButtonPressed(id) {
@@ -188,16 +181,30 @@ let previousTime = performance.now();
 let progress = 0;
 tabButtonPressed(0);
 updateInventory();
+
+function addInfoText(text) {
+    const info = document.getElementById('infoContainer');
+    if (!info) return;
+    info.innerHTML = text + "<br>" + info.innerHTML;
+    if(info.innerHTML.length >= 500) info.innerHTML = info.innerHTML.slice(0, 500) + "...";
+}
+
 setInterval(() => {
     const currentTime = performance.now();
     const deltaTime = (currentTime - previousTime) / 1000;
+    document.getElementById("progressText").innerText = actionDescription;
     previousTime = currentTime;
 
     if(action === null) return;
 
     if(progress >= 1) {
-        time -= maxTime;
-        doAction(action);
+        for(var i=0; i<100; i++){
+            if(time/maxTime <= 1) break;
+
+            addInfoText("You completed doing " + actionDescription);
+            time -= maxTime;
+            doAction(action);
+        }
     }
 
     setProgress(progress);

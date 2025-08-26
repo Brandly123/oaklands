@@ -1,6 +1,6 @@
 let draggedSlot = null;
 
-for (let i = 0; i < 60; i++) {
+for (let i = 0; i < 54; i++) {
     const btn = document.getElementById(`slot${i}`);
     if (!btn) continue;
 
