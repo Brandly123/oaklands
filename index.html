@@ -19,7 +19,7 @@
         <tr>
             <td id="tabContainer">
                 <button onClick="tabButtonPressed(0)">Oakland Fields</button>
-                <button onClick="tabButtonPressed(1)">Oakland Woods</button>
+                <button onClick="tabButtonPressed(1)" style="visibility: hidden" id="woods">Oakland Woods</button>
                 <button onClick="tabButtonPressed(2)">Settings</button>
             </td>
 
@@ -70,7 +70,6 @@
 
                     <table>
                         <tr>
-                            <td><button onclick="switchAction('axe',null,2)"><img src="assets/stone axe.png"></button></td>
                             <td><button onclick="switchAction('pickaxe',null,2)"><img src="assets/stone pickaxe.png"></button></td>
                             <td><button></button></td>
                             <td><button></button></td>

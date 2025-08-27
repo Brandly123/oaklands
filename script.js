@@ -10,13 +10,12 @@ let htmlThings = [
     <button onclick="switchAction('dirt','mining',1)">Dig the mound</button>
     <button onclick="switchAction('chop','woodcutting',4)">Chop a balsa tree</button>
         <br><br>
-    <button onclick="switchAction('chop2','woodcutting',7)">Chop the large poplar tree</button>
+    <button onclick="switchAction('chop3','woodcutting',13,5)">Chop the large poplar tree (lvl 5 woodcutting required)</button>
     `,
 
     `This seems to be a forest. Looking around, you see some poplar trees and stone. There's a strange farmer-looking person sitting on the ground.
-    There's a sign near the farmer that says 'FREE PICKAXE HERE' (Placeholder). There's also a stream with what seems to be a small town up ahead,
-    but the bridge seems to be broken.<br><br>
-    <button onclick="switchAction('chop2','woodcutting',4)">Chop the poplar tree</button>
+    There's also a stream with what seems to be a small town up ahead, but the bridge seems to be broken.<br><br>
+    <button onclick="switchAction('chop2','woodcutting',4,5)">Chop a poplar tree (lvl 5 woodcutting required)</button>
     <button onclick="switchAction('mine','mining',7)">Mine some stone</button></div>
         <br><br>
     <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge</button>
@@ -45,7 +44,8 @@ function calculateLevel(experience) {
     ));
 }
 
-function switchAction(act,type,timed=1,actionDesc) {
+function switchAction(act,type,timed=1,minLevel=0) {
+    if(calculateLevel(exp[type]) < minLevel) return alert(`You need level ${minLevel} ${type} to do this action.`);
     let item;
     switch(type) {
         case "woodcutting":
@@ -64,14 +64,14 @@ function switchAction(act,type,timed=1,actionDesc) {
     if(!item && act != "dirt") return alert(`You need a tool that can do ${type} to do this action.`);
 
     action = act;
-    if(actionDesc) actionDescription = actionDesc;
-    else actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
+    actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
     time = 0;
 
     let expMult = 1;
     if(exp[type] && exp[type] >= 100){
         expMult = (calculateLevel(exp[type])**1.4)/150+1;
     }
+    //calculateLevel(exp[type]) < minLevel
 
     maxTime = timed / item[1] / expMult;
 }
@@ -155,12 +155,16 @@ function addItem(type, amount, xp=10, acttype="mining") {
 function rand(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function findItemAmount(type){
+    if(inventory.find(item => item[0] === type)) return inventory.find(item => item[0] === "balsa log")[1];
+    return 0;
+}
 
 function doAction(type) {
     switch(type) {
         case "dirt":
             addItem("dirt", rand(1,3),4);
-            addItem("stone", rand(0,0.4),0);
+            addItem("stone", rand(0,1.5),0);
             break;
 
         case "chop":
@@ -169,14 +173,21 @@ function doAction(type) {
         case "chop2":
             addItem("poplar log", rand(1,2),10,"woodcutting"); break;
 
+        case "chop3":
+            addItem("poplar log", rand(3,6),20,"woodcutting");
+            document.getElementById("woods").style.visibility = "visible";
+            break;
+
         case "mine":
             addItem("stone", rand(2,5),22); break;
 
         case "pickaxe":
-            addItem("stone pickaxe", 1, 10, "woodworking"); break;
-
-        case "axe":
-            addItem("stone axe", 1, 10, "woodworking"); break;
+            if(findItemAmount("stone") >= 7 && findItemAmount("balsa log") >= 4) {
+                addItem("stone pickaxe", 1, 40, "woodworking");
+                inventory.find(item => item[0] === "stone")[1] -= 7;
+                inventory.find(item => item[0] === "balsa log")[1] -= 4;
+            }
+            break;
 
         default:
             alert("Game bugged: " + btoa(type)); break;
