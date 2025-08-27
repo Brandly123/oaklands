@@ -47,15 +47,18 @@
                 </div>
                 <div id="experience" class="inventoryTab">
                     <h2>Experience</h2>
-                    <em>placeholder. this doesnt do anything.</em><br><br>
 
-                     <div class="expBarContainer" id="woodcutting">
+                    <div class="expBarContainer" id="expwoodcutting">
                         <div class="expBar"></div>
-                        <span class="expBarText">Woodcutting lvl 1</span>
+                        <span class="expBarText">Woodcutting</span>
                     </div>
-                     <div class="expBarContainer" id="mining">
+                    <div class="expBarContainer" id="expmining">
                         <div class="expBar"></div>
-                        <span class="expBarText">Mining lvl 1</span>
+                        <span class="expBarText">Mining</span>
+                    </div>
+                    <div class="expBarContainer" id="expwoodworking">
+                        <div class="expBar"></div>
+                        <span class="expBarText">Woodworking</span>
                     </div>
                 </div>
                 <div id="equipment" class="inventoryTab">
@@ -64,30 +67,14 @@
                 </div>
                 <div id="crafting" class="inventoryTab">
                     <h2>Crafting</h2>
-                    <em>placeholder. this doesnt do anything.</em>
 
                     <table>
                         <tr>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                        </tr>
-                        <tr>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                        </tr>
-                        <tr>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                            <td><img src="assets/stone pickaxe.png" width="200px"></td>
-                        </tr>
-                        <tr>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
-                            <td><img src="assets/stone axe.png" width="200px"></td>
+                            <td><button onclick="switchAction('axe',null,2)"><img src="assets/stone axe.png"></button></td>
+                            <td><button onclick="switchAction('pickaxe',null,2)"><img src="assets/stone pickaxe.png"></button></td>
+                            <td><button></button></td>
+                            <td><button></button></td>
+                            <td><button></button></td>
                         </tr>
                     </table>
                 </div>

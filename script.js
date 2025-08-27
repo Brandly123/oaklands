@@ -7,7 +7,7 @@ let htmlThings = [
     There's a small, rocky mound and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
 
     <div>
-    <button onclick="switchAction('dirt','mining',0.01)">Dig the mound</button>
+    <button onclick="switchAction('dirt','mining',1)">Dig the mound</button>
     <button onclick="switchAction('chop','woodcutting',4)">Chop a balsa tree</button>
         <br><br>
     <button onclick="switchAction('chop2','woodcutting',7)">Chop the large poplar tree</button>
@@ -17,10 +17,7 @@ let htmlThings = [
     There's a sign near the farmer that says 'FREE PICKAXE HERE' (Placeholder). There's also a stream with what seems to be a small town up ahead,
     but the bridge seems to be broken.<br><br>
     <button onclick="switchAction('chop2','woodcutting',4)">Chop the poplar tree</button>
-    <button onclick="switchAction('mine','mining',12)">Mine some stone</button></div>
-        <br><br>
-    <button onclick="switchAction('pickaxe',null,2)">Buy a pickaxe for free</button>
-    <button onclick="switchAction('axe',null,2)">Buy a pickaxe for free</button>
+    <button onclick="switchAction('mine','mining',7)">Mine some stone</button></div>
         <br><br>
     <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge</button>
         <br><br>
@@ -29,9 +26,10 @@ let htmlThings = [
     <button onclick="exports()">Export Inventory</button>
     <button onclick="imports()">Import Inventory</button> <textarea id="importArea" style="width:300px;"></textarea>
     `
-], inventory = [];
+], inventory = [],
+exp = {"woodcutting":0, "mining":0, "woodworking":0};
 for(var i=0; i<54; i++) inventory.push(["empty", 0]);
-//inventory[0] = ["stone axe", 1];
+inventory[0] = ["stone axe", 1];
 
 function exports() {
     document.getElementById("mainContainer").innerHTML = (btoa(JSON.stringify(inventory)))
@@ -39,6 +37,12 @@ function exports() {
 function imports() {
     inventory = JSON.parse(atob(document.getElementById("importArea").value));
     updateInventory();
+}
+
+function calculateLevel(experience) {
+    return Math.max(0, Math.ceil(
+        Math.log10(experience/40) / 0.0607
+    ));
 }
 
 function switchAction(act,type,timed=1,actionDesc) {
@@ -53,8 +57,6 @@ function switchAction(act,type,timed=1,actionDesc) {
         case "gathering":
             item = getBestItem("shears");
             break;
-        case "temporary":
-            break;
         default:
             item = ["empty",0.6];
     }
@@ -65,12 +67,18 @@ function switchAction(act,type,timed=1,actionDesc) {
     if(actionDesc) actionDescription = actionDesc;
     else actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
     time = 0;
-    maxTime = timed / item[1];
+
+    let expMult = 1;
+    if(exp[type] && exp[type] >= 100){
+        expMult = (calculateLevel(exp[type])**1.4)/150+1;
+    }
+
+    maxTime = timed / item[1] / expMult;
 }
 
 function fightFarmer() {
     alert("you fight very hard.. and get injured, and ran. But you pickpocketed him while you ran away.");
-    addItem("coin", 1)
+    addItem("coin", rand(2,5), 0)
 }
 
 const order = [
@@ -79,14 +87,28 @@ const order = [
 ];
 
 function getBestItem(type) {
-    for (let axe of order) {
-        if (inventory.some(item => item[0] === (axe[0] + " " + type) && item[1] > 0)) {
-            return axe;
+    for (let tool of order) {
+        if (inventory.some(item => item[0] === (tool[0] + " " + type) && item[1] > 0)) {
+            return tool;
         }
     }
-    return null;
+
+    return ["empty", 0.6];
 }
 
+function updateExpBar(type) {
+    var max = calculateLevel(exp[type]);
+    var o = 1.15**(max-1)*40;
+    var n = 1.15**max*40;
+    
+    if(max <= 0) {
+        o = 0;
+        n = 40;
+    }
+
+    document.querySelector(`#exp${type} .expBar`).style.width = Math.min(1, (exp[type]-o)/(n-o)) * 100 + '%';
+    document.querySelector(`#exp${type} .expBarText`).innerHTML = type + " " + max;
+}
 function updateInventory() {
     for(let i=0; i<54; i++) {
         const slot = document.getElementById(`slot${i}`);
@@ -107,9 +129,13 @@ function updateInventory() {
             slot.appendChild(text);
         }
     }
+
+    updateExpBar("woodcutting");
+    updateExpBar("woodworking");
+    updateExpBar("mining");
 }
 
-function addItem(type, amount) {
+function addItem(type, amount, xp=10, acttype="mining") {
     if(amount <= 0) return;
     let slot = inventory.find(item => item[0] === type);
 
@@ -121,6 +147,9 @@ function addItem(type, amount) {
         if (empty !== null) inventory[empty] = [type, amount];
     }
 
+    if(exp[acttype] !== undefined) {
+            exp[acttype] += xp;
+    }
     updateInventory();
 }
 function rand(min,max) {
@@ -130,24 +159,24 @@ function rand(min,max) {
 function doAction(type) {
     switch(type) {
         case "dirt":
-            addItem("dirt", rand(1,3));
-            addItem("stone", rand(0,0.4));
+            addItem("dirt", rand(1,3),4);
+            addItem("stone", rand(0,0.4),0);
             break;
 
         case "chop":
-            addItem("balsa log", rand(1,2)); break;
+            addItem("balsa log", rand(1,2),5,"woodcutting"); break;
 
         case "chop2":
-            addItem("poplar log", rand(1,2)); break;
+            addItem("poplar log", rand(1,2),10,"woodcutting"); break;
 
         case "mine":
-            addItem("stone", rand(2,5)); break;
+            addItem("stone", rand(2,5),22); break;
 
         case "pickaxe":
-            addItem("stone pickaxe", 1); break;
+            addItem("stone pickaxe", 1, 10, "woodworking"); break;
 
         case "axe":
-            addItem("stone axe", 1); break;
+            addItem("stone axe", 1, 10, "woodworking"); break;
 
         default:
             alert("Game bugged: " + btoa(type)); break;

@@ -3,7 +3,7 @@
 * {
     font-family: "Work Sans", sans-serif;
     transition: all 0.1s ease-in-out;
-    outline: 1px solid purple;
+    /*outline: 1px solid purple;*/
 }
 
 html, body {
@@ -185,4 +185,14 @@ button:hover {
     font-weight: bold;
     pointer-events: none;
     user-select: none;
+}
+
+#crafting button {
+    width: 55px;
+    height: 55px;
+    border-radius: 3px;
+}
+#crafting img {
+    width: 55px;
+    border-radius: 3px;
 }
