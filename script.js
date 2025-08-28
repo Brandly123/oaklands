@@ -17,6 +17,7 @@ let htmlThings = [
     There's also a stream with what seems to be a small town up ahead, but the bridge seems to be broken.<br><br>
     <button onclick="switchAction('chop2','woodcutting',4,5)">Chop a poplar tree (lvl 5 woodcutting required)</button>
     <button onclick="switchAction('mine','mining',7)">Mine some stone</button></div>
+    <button onclick="switchAction('tin ore','mining',15,6)">Mine some tin ore (lvl 6 mining required)</button></div>
         <br><br>
     <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge</button>
         <br><br>
@@ -58,10 +59,10 @@ function switchAction(act,type,timed=1,minLevel=0) {
             item = getBestItem("shears");
             break;
         default:
-            item = ["empty",0.6];
+            item = ["chisel", 0.8];
     }
-
-    if(!item && act != "dirt") return alert(`You need a tool that can do ${type} to do this action.`);
+ 
+    if((item[0] == 'empty') && (act !== "dirt")) return alert(`You need a tool that can do ${type} to do this action.`);
 
     action = act;
     actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
@@ -82,7 +83,7 @@ function fightFarmer() {
 }
 
 const order = [
-    ["iron",1.2],
+    ["tin",1.25],
     ["stone",1.0]
 ];
 
@@ -156,7 +157,7 @@ function rand(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function findItemAmount(type){
-    if(inventory.find(item => item[0] === type)) return inventory.find(item => item[0] === "balsa log")[1];
+    if(inventory.find(item => item[0] === type)) return inventory.find(item => item[0] === type)[1];
     return 0;
 }
 
@@ -181,11 +182,38 @@ function doAction(type) {
         case "mine":
             addItem("stone", rand(2,5),22); break;
 
-        case "pickaxe":
-            if(findItemAmount("stone") >= 7 && findItemAmount("balsa log") >= 4) {
+        case "tin ore":
+            addItem("tin ore", rand(1,2),40); break;
+
+        case "stone pickaxe":
+            if(findItemAmount("stone") >= 6 && findItemAmount("balsa log") >= 3) {
                 addItem("stone pickaxe", 1, 40, "woodworking");
-                inventory.find(item => item[0] === "stone")[1] -= 7;
+                inventory.find(item => item[0] === "stone")[1] -= 6;
+                inventory.find(item => item[0] === "balsa log")[1] -= 3;
+            }
+            break;
+
+        case "tin pickaxe":
+            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5) {
+                addItem("tin pickaxe", 1, 65, "woodworking");
+                inventory.find(item => item[0] === "tin bar")[1] -= 8;
+                inventory.find(item => item[0] === "poplar log")[1] -= 5;
+            }
+            break;
+
+        case "stone axe":
+            if(findItemAmount("stone") >= 5 && findItemAmount("balsa log") >= 4) {
+                addItem("stone axe", 1, 40, "woodworking");
+                inventory.find(item => item[0] === "stone")[1] -= 5;
                 inventory.find(item => item[0] === "balsa log")[1] -= 4;
+            }
+            break;
+
+        case "tin bar":
+            if(findItemAmount("tin ore") >= 3 && findItemAmount("poplar log") >= 2) {
+                addItem("tin bar", 2, 30, "woodworking");
+                inventory.find(item => item[0] === "tin ore")[1] -= 3;
+                inventory.find(item => item[0] === "poplar log")[1] -= 2;
             }
             break;
 
@@ -251,3 +279,4 @@ setInterval(() => {
     time += deltaTime;
     progress = time/maxTime;
 }, 50)
+
