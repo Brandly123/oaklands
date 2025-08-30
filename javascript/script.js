@@ -32,7 +32,10 @@ let htmlThings = [
     "stone pickaxe": "A simple stone pickaxe, useful to chop stone and ores.",
     "tin axe": "A flimsy tin axe, useful to chop wood.<br>30% faster than a stone axe.",
     "tin pickaxe": "A flimsy tin pickaxeaxe, useful to chop stone and ores.<br>30% faster than a stone pickaxe.",
+    "iron pickaxe": "A soft iron pickaxeaxe, useful to chop stone and ores.<br>70% faster than a stone pickaxe.",
+
     "coin": "<em>This coin appears unusually observant...</em>",
+    "dirt ball": "<em>A bit of dirt, molded into a ball</em>",
 },inventory = [],
 exp = {"woodcutting":0, "mining":0, "crafting":0, "forging": 0};
 for(var i=0; i<54; i++) inventory.push(["empty", 0]);
@@ -241,8 +244,14 @@ function doAction(type) {
         case "iron bar":
             if(findItemAmount("iron ore") >= 4 && findItemAmount("poplar log") >= 2) {
                 addItem("iron bar", 2, 50, "forging");
-                inventory.find(item => item[0] === "tin ore")[1] -= 4;
+                inventory.find(item => item[0] === "iron ore")[1] -= 4;
                 inventory.find(item => item[0] === "poplar log")[1] -= 2;
+            }
+            break;
+        case "dirt ball":
+            if(findItemAmount("dirt") >= 12){
+                addItem("dirt ball", 1, 12, "crafting");
+                inventory.find(item => item[0] === "dirt")[1] -= 12;
             }
             break;
 
