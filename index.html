@@ -6,9 +6,9 @@
     <title>Oaklands</title>
 
     <link rel="stylesheet" href="style.css">
-    <script src="inventory.js" defer></script>
-    <script src="script.js" defer></script>
-    <script src="inventoryDrag.js" defer></script>
+    <script src="javascript/inventory.js" defer></script>
+    <script src="javascript/script.js" defer></script>
+    <script src="javascript/inventoryDrag.js" defer></script>
 </head>
 <body>
     <div id="progressBar">
@@ -28,16 +28,16 @@
             <td id="sideContainer">
                 <table id="inventoryTabs">
                     <tr>
-                        <td><button onclick="switchInventoryTab('inventorys')">
+                        <td><button onclick="switchInventoryTab('inventorys')" class="inventoryButton">
                             <img src="assets/tabs/Inventory.png", width="50px">
                         </button></td>
-                        <td><button onclick="switchInventoryTab('experience')">
+                        <td><button onclick="switchInventoryTab('experience')" class="inventoryButton">
                             <img src="assets/tabs/Experience.png", width="50px">
                         </button></td>
-                        <td><button onclick="switchInventoryTab('equipment')">
+                        <td><button onclick="switchInventoryTab('equipment')" class="inventoryButton">
                             <img src="assets/tabs/Equipment.png", width="50px">
                         </button></td>
-                        <td><button onclick="switchInventoryTab('crafting')">
+                        <td><button onclick="switchInventoryTab('crafting')" class="inventoryButton">
                             <img src="assets/tabs/Crafting.png", width="50px">
                         </button></td>
                     </tr>
@@ -56,9 +56,13 @@
                         <div class="expBar"></div>
                         <span class="expBarText">Mining</span>
                     </div>
-                    <div class="expBarContainer" id="expwoodworking">
+                    <div class="expBarContainer" id="expcrafting">
                         <div class="expBar"></div>
-                        <span class="expBarText">Woodworking</span>
+                        <span class="expBarText">Crafting</span>
+                    </div>
+                    <div class="expBarContainer" id="expforging">
+                        <div class="expBar"></div>
+                        <span class="expBarText">Forging</span>
                     </div>
                 </div>
                 <div id="equipment" class="inventoryTab">
@@ -73,28 +77,40 @@
                             <td>
                                 <button class="crafting-btn" onclick="switchAction('stone pickaxe',null,2)">
                                     <img src="assets/stone pickaxe.png" alt="Stone Pickaxe">
-                                    <span class="craft-label"><span class="big">Stone Pickaxe</span><br>6x stone<br>3x balsa wood</span>
+                                    <span class="label"><span class="big">Stone Pickaxe</span><br>6x stone<br>3x balsa wood</span>
                                 </button>
                             </td>
                             <td>
                                 <button class="crafting-btn" onclick="switchAction('stone axe',null,2)">
                                     <img src="assets/stone axe.png" alt="Stone Axe">
-                                    <span class="craft-label"><span class="big">Stone Axe</span><br>5x stone<br>4x balsa wood</span>
+                                    <span class="label"><span class="big">Stone Axe</span><br>5x stone<br>4x balsa wood</span>
                                 </button>
                             </td>
                             <td>
                                 <button class="crafting-btn" onclick="switchAction('tin pickaxe',null,4)">
                                     <img src="assets/tin pickaxe.png" alt="Tin Pickaxe">
-                                    <span class="craft-label"><span class="big">Tin Pickaxe</span><br>8x tin bar<br>5x poplar wood</span>
+                                    <span class="label"><span class="big">Tin Pickaxe</span><br>8x tin bar<br>5x poplar wood</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn" onclick="switchAction('iron pickaxe',null,4)">
+                                    <img src="assets/iron pickaxe.png" alt="Iron Pickaxe">
+                                    <span class="label"><span class="big">Iron Pickaxe</span><br>12x iron bar<br>5x poplar wood</span>
                                 </button>
                             </td>
                             <td>
                                 <button class="crafting-btn" onclick="switchAction('tin bar',null,3)">
                                     <img src="assets/tin bar.png" alt="Tin Bar">
-                                    <span class="craft-label"><span class="big">Tin Bar (x2)</span><br>3x Tin Ore<br>2x poplar wood</span>
+                                    <span class="label"><span class="big">Tin Bar (x2)</span><br>3x Tin Ore<br>2x poplar wood</span>
                                 </button>
                             </td>
-                            <td><button></button></td>
+                        </tr><tr>
+                            <td>
+                                <button class="crafting-btn" onclick="switchAction('iron bar',null,3)">
+                                    <img src="assets/iron bar.png" alt="Iron Bar">
+                                    <span class="label"><span class="big">Iron Bar (x2)</span><br>4x Iron Ore<br>2x poplar wood</span>
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
