@@ -1,6 +1,5 @@
 let draggedSlot = null;
 
-// Setup dragstart on slot elements as before
 for (let i = 0; i < 54; i++) {
     const btn = document.getElementById(`slot${i}`);
     if (!btn) continue;
@@ -14,7 +13,6 @@ for (let i = 0; i < 54; i++) {
         draggedSlot = null;
     });
 
-    // Also maintain dragover and drop on slots if needed
     btn.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
@@ -32,8 +30,7 @@ for (let i = 0; i < 54; i++) {
     });
 }
 
-// Event delegation for .tempslot elements on a stable common parent container
-const container = document.getElementById('mainContainer'); // Use the container that holds .tempslot elements
+const container = document.getElementById('mainContainer');
 
 container.addEventListener('dragover', function (e) {
     if (e.target.classList.contains('tempslot')) {

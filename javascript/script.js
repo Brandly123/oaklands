@@ -204,7 +204,7 @@ function updateInventory() {
     if(!enhanceButton) return;
     const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
     if(!enhanceSlotId) return;
-    const chance = Math.pow(0.5,inventory[enhanceSlotId][2])
+    const chance = Math.pow(0.7,inventory[enhanceSlotId][2])
     document.getElementById("enhanceCost").innerHTML = (chance * 100).toFixed(2);
 }
 function addItem(type, amount, xp=0, acttype="mining") {
@@ -213,6 +213,10 @@ function addItem(type, amount, xp=0, acttype="mining") {
 
     if(slot) {
         slot[1] += amount;
+        if(slot[1] < 0){
+            slot[1] -= amount;
+            return "no item"
+        }
     } else {
         if(amount <0) return "no item"
         let empty = inventory.findIndex(item => item[0] === "empty")
@@ -230,7 +234,7 @@ function enhance(){
     if(!enhanceButton) return;
     const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
     if(!enhanceSlotId) return;
-    const chance = Math.pow(0.5,inventory[enhanceSlotId][2])
+    const chance = Math.pow(0.7,inventory[enhanceSlotId][2])
 
     if(addItem("dirt ball", -1) !== "no item")
         if(Math.random() <= chance) 
