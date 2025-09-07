@@ -30,7 +30,18 @@ let htmlThings = [
     <br><br>
 
     <button onclick="fightFarmer()" class="fight">Attack!</button>
-    </div>
+    </div>1.1
+    `,
+    `
+    New template slot:<br>
+    <button class="tempslot" id="enhanceSlot">
+        <span class="tempslotcontent"></span>
+        <span class="tempslotid">null</span>
+    </button>
+    <button id="enhance" onclick="enhance()">
+        Enhance for the cost of <span>1 dirt ball</span><br>
+        Success rate: <span id="enhanceCost">0</span>%
+    </button>
     `,
     `Nothing here yet, except for a basic saving system<br><br>
     <button onclick="exports()">Export</button>
@@ -41,10 +52,10 @@ let htmlThings = [
     //Tool
     "stone pickaxe":"<span class='skill'>Tool</span><br>A simple stone pickaxe, useful to chop stone and ores.",
     "tin axe":      "<span class='skill'>Tool</span><br>A flimsy tin axe, useful to chop wood.<br>30% faster than a stone axe.",
-    "tin axe":      "<span class='skill'>Tool</span><br>A soft tin axe, useful to chop wood.<br>70% faster than a stone axe.",
+    "iron axe":      "<span class='skill'>Tool</span><br>A soft tin axe, useful to chop wood.<br>60% faster than a stone axe.",
     "stone axe":    "<span class='skill'>Tool</span><br>A simple stone axe, useful to chop wood.",
     "tin pickaxe":  "<span class='skill'>Tool</span><br>A flimsy tin pickaxe, useful to chop stone and ores.<br>30% faster than a stone pickaxe.",
-    "iron pickaxe": "<span class='skill'>Tool</span><br>A soft iron pickaxe, useful to chop stone and ores.<br>70% faster than a stone pickaxe.",
+    "iron pickaxe": "<span class='skill'>Tool</span><br>A soft iron pickaxe, useful to chop stone and ores.<br>60% faster than a stone pickaxe.",
 
     //Miscellaneous
     "coin":     "<span class='skill'>Miscellaneous</span><br><em>This coin appears unusually observant...</em>",
@@ -54,11 +65,18 @@ consumableList = [
     "blue berry",
     "vanilla wafer",
     "chocolate wafer",
+],tools = [
+    "stone pickaxe",
+    "tin pickaxe",
+    "iron pickaxe",
+    "stone axe",
+    "tin axe",
+    "iron axe",
 ],
-exp = {"woodcutting":100, "mining":100, "crafting":100, "forging": 100, "gathering": 100},
+exp = {"woodcutting":151, "mining":151, "crafting":151, "forging": 151, "gathering": 151},
 prevSwitch = ['dirt','mining',1,0];
-for(var i=0; i<54; i++) inventory.push(["empty", 0]);
-inventory[0] = ["stone axe", 1];
+for(var i=0; i<54; i++) inventory.push(["empty", 0, 0]);
+inventory[0] = ["stone axe", 1, 0];
 
 function exports() {
     document.getElementById("importArea").innerHTML = (btoa(JSON.stringify([inventory,exp])))
@@ -75,7 +93,7 @@ function imports() {
 
 function calculateLevel(experience) {
     return Math.max(0, Math.ceil(
-        Math.log10((experience+0.01)/100) / 0.0607
+        Math.log10((experience)/150) / 0.0607
     ));
 }
 
@@ -119,37 +137,34 @@ function fightFarmer() {
     alert("you fight very hard.. and get injured, and ran. But you pickpocketed him while you ran away.");
     addItem("coin", rand(2,5), 0)
 }
-
 const order = [
-    ["iron",1.7],
+    ["iron",1.6],
     ["tin",1.3],
     ["stone",1.0]
 ];
 
 function getBestItem(type) {
     for (let tool of order) {
-        if (inventory.some(item => item[0] === (tool[0] + " " + type) && item[1] > 0)) {
-            return tool;
+        let found = inventory.find(item => item[0] === (tool[0] + " " + type) && item[1] > 0);
+        if (found) {
+            let enchantBuff = (found[2] || 0) * 0.1 + 1;
+            let totalSpeed = tool[1] * enchantBuff;
+            return [tool[0], totalSpeed];
         }
     }
-
     return ["empty", 0.6];
 }
 
 function updateExpBar(type) {
     var max = calculateLevel(exp[type]);
-    var o = 1.15**(max-1)*100;
-    var n = 1.15**max*100;
-    
-    if(max <= 0) {
-        o = 0;
-        n = 100;
-    }
+    var o = 1.15**(max-1)*150;
+    var n = 1.15**max*150;
 
     document.querySelector(`#exp${type} .expBar`).style.width = Math.min(1, (exp[type]-o)/(n-o)) * 100 + '%';
     document.querySelector(`#exp${type} .expBarText`).innerHTML = type + " " + max;
 }
 function updateInventory() {
+    //Updates every inventory slot
     for(let i=0; i<54; i++) {
         const img = document.querySelector(`#slot${i} .inventory-img`);
         const amount = document.querySelector(`#slot${i} .inventory-amount`);
@@ -162,28 +177,47 @@ function updateInventory() {
         } else {
             img.src = `assets/${inventory[i][0]}.png`
             amount.innerHTML = Math.floor(inventory[i][1]);
-            tooltip.innerHTML = `<span class='big'>${inventory[i][0].charAt(0).toUpperCase() + inventory[i][0].slice(1)}</span> <br> ${tooltips[inventory[i][0]] || ""}`;
+            tooltip.innerHTML = `<span class='big'>${inventory[i][0].charAt(0).toUpperCase() + inventory[i][0].slice(1)} +${inventory[i][2]}</span> <br> ${tooltips[inventory[i][0]] || ""}`;
             tooltip.style.visibility = 'visible';
         }
     }
 
+    //Updates every EXP bar
     updateExpBar("woodcutting");
     updateExpBar("mining");
     updateExpBar("crafting");
     updateExpBar("forging");
     updateExpBar("gathering");
-}
 
+    //Updates every temporary slot
+    const slots = document.querySelectorAll(".tempslot")
+    for(var i=0;i<slots.length;i++){
+          //ok echo or brandly or someone ik this sucks but dont question it, ok?
+        const temp = document.querySelectorAll(".tempslot")[0].querySelector(".tempslotid").innerHTML;
+        const content = document.querySelectorAll(".tempslot")[0].querySelector(".tempslotcontent");
+        if(temp === null) return;
+        
+        content.innerHTML = `${inventory[temp][0]} (*${temp}) x${inventory[temp][1]}`
+    }
+
+    const enhanceButton = document.getElementById("enhance");
+    if(!enhanceButton) return;
+    const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
+    if(!enhanceSlotId) return;
+    const chance = Math.pow(0.5,inventory[enhanceSlotId][2])
+    document.getElementById("enhanceCost").innerHTML = (chance * 100).toFixed(2);
+}
 function addItem(type, amount, xp=0, acttype="mining") {
-    if(amount <= 0) return;
+    if(amount === 0) return;
     let slot = inventory.find(item => item[0] === type);
 
     if(slot) {
         slot[1] += amount;
     } else {
+        if(amount <0) return "no item"
         let empty = inventory.findIndex(item => item[0] === "empty")
         
-        if (empty !== null) inventory[empty] = [type, amount];
+        if (empty !== null) inventory[empty] = [type, amount, 0];
     }
 
     if(exp[acttype] !== undefined && amount > 0) {
@@ -191,6 +225,20 @@ function addItem(type, amount, xp=0, acttype="mining") {
     }
     updateInventory();
 }
+function enhance(){
+    const enhanceButton = document.getElementById("enhance");
+    if(!enhanceButton) return;
+    const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
+    if(!enhanceSlotId) return;
+    const chance = Math.pow(0.5,inventory[enhanceSlotId][2])
+
+    if(addItem("dirt ball", -1) !== "no item")
+        if(Math.random() <= chance) 
+            inventory[enhanceSlotId][2]++
+    
+    updateInventory();
+}
+
 function rand(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
