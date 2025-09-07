@@ -64,14 +64,50 @@
                         <div class="expBar"></div>
                         <span class="expBarText">Forging</span>
                     </div>
+                    <div class="expBarContainer" id="expgathering">
+                        <div class="expBar"></div>
+                        <span class="expBarText">Gathering</span>
+                    </div>
                 </div>
                 <div id="equipment" class="inventoryTab">
                     <h2>Equipment</h2>
-                    <em>placeholder. this doesnt do anything.</em>
+                    <em>TODO: add eatng food.</em>
+                    <table>
+                        <tr>
+                            <td>
+                                <button class="crafting-btn">
+                                    <img src="assets/red berry.png" alt="red berry">
+                                    <span class="label"><span class="big">Red berry</span><br>Applies status effects:<br>Instant Heal I (+5hp)</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn">
+                                    <img src="assets/blue berry.png" alt="blue berry">
+                                    <span class="label"><span class="big">Blue berry</span><br>Applies status effects:<br>Instant Heal II (+10hp)</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn">
+                                    <img src="assets/vanilla wafer.png" alt="vanilla wafer">
+                                    <span class="label"><span class="big">Vanilla Wafer</span><br>Applies status effects:<br>Crafting II (+40% mining speed)<br>Forging II (+40% mining speed)</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn">
+                                    <img src="assets/chocolate wafer.png" alt="chocolate wafer">
+                                    <span class="label"><span class="big">Chocolate Wafer</span><br>Applies status effects:<br>Mining II (+20% mining speed)</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn">
+                                    <img src="assets/a.png" alt="mega brew">
+                                    <span class="label"><span class="big">Mega brew</span><br>Applies status effects:<br>Mining L (+500% mining speed)</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div id="crafting" class="inventoryTab">
-                    <h2>Crafting</h2>
-
                     <table>
                         <tr>
                             <td>
@@ -112,9 +148,27 @@
                                 </button>
                             </td>
                             <td>
-                                <button class="crafting-btn" onclick="switchAction('dirt ball','crafting',0.2)">
+                                <button class="crafting-btn" onclick="switchAction('dirt ball','crafting',0.4)">
                                     <img src="assets/dirt ball.png" alt="Dirt Ball">
-                                    <span class="label"><span class="big">Dirt Ball</span><br>12x dirt ball</span>
+                                    <span class="label"><span class="big">Dirt Ball</span><br>16x dirt ball</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn" onclick="switchAction('stone shear','crafting',3)">
+                                    <img src="assets/stone shear.png" alt="Stone Shear">
+                                    <span class="label"><span class="big">Shears</span><br>free woaj so good</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn" onclick="switchAction('tin axe','crafting',4)">
+                                    <img src="assets/tin axe.png" alt="Tin Axe">
+                                    <span class="label"><span class="big">Tin Axe</span><br>8x tin bar<br>5x poplar wood</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="crafting-btn" onclick="switchAction('iron axe','crafting',4)">
+                                    <img src="assets/iron axe.png" alt="Iron Axe">
+                                    <span class="label"><span class="big">Iron Axe</span><br>12x iron bar<br>5x poplar wood</span>
                                 </button>
                             </td>
                         </tr>

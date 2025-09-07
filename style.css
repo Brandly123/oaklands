@@ -5,6 +5,11 @@
     transition: all 0.2s;
     border-radius: 5px;
 }
+/*
+#digMound {
+    box-shadow: greenyellow 0 0 10px;
+}
+*/
 h1, h2 {
     margin: 4px;
 }
@@ -18,7 +23,7 @@ button:hover {
     background-color: #C7C7C7;
 }
 img {
-    width: 35px;
+    width: 45px;
     filter: drop-shadow(0 0 3px #9e9e9e);
 }
 .big {
@@ -155,7 +160,7 @@ td {
 .expBarContainer {
     margin-top:4px; 
     width: 90%; 
-    height: 24px; 
+    height: 30px; 
     background: #cccccc;
     position: relative;
     display: block;
@@ -164,8 +169,9 @@ td {
 }
 .expBar {
     height: 100%; 
-    width: 40%; 
+    width: 80%; 
     background: linear-gradient(90deg, #4caf50, #8bc34a); 
+    text-align: center;
 }
 .expBarText {
     position: absolute; 
@@ -227,4 +233,22 @@ td {
 button:hover .label {
     display: block;
     opacity: 1;
+}
+
+
+.inventory-amount {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 14px;
+    padding: 2px 2px;
+    color: black;
+    
+   paint-order: stroke fill;
+    -webkit-text-stroke: 3px white;
+}
+
+.skill {
+    color: gray;
+    font-size: 0.8em;
 }

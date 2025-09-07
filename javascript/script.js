@@ -3,41 +3,60 @@ let maxTime = 1;
 let action = null;
 let actionDescription = "";
 let htmlThings = [
-    `You see a forest of poplar trees up ahead. There's a large poplar tree covering a bridge to get there.
-    There's a small, rocky mound and a few balsa trees. You'll need to get an axe to chop anything down.<br><br>
+    `There's a couple of poplar logs here. Up ahead seems to be a bridge over a small stream, but it's blocked by a single large poplar tree.
+    There's also a large rocky mound and some berry bushes. You'll probably need an axe to chop anything down.<br><br>
 
     <div>
-    <button onclick="switchAction('dirt','mining',1)">Dig the mound</button>
-    <button onclick="switchAction('chop','woodcutting',2.5)">Chop a balsa tree</button>
+    <button onclick="switchAction('dirt','mining', 0.8)" id="digMound">Dig the mound <span class='skill'>(Mining)</span></button>
+    <button onclick="switchAction('balsa log','woodcutting', 3)">Chop a balsa tree <span class='skill'>(Woodcutting)</span></button>
+    <button onclick="switchAction('berry','gathering', 2)">Gather some berries <span class='skill'>(Gathering)</span></button>
         <br><br>
-    <button onclick="switchAction('chop3','woodcutting',8,2)">Chop the large poplar tree (lvl 2 woodcutting required)</button>
+    <button onclick="switchAction('big poplar log','woodcutting',10,5)">Chop the large poplar tree <span class='skill'>(Woodcutting 5)</span></button>
+    </div>
     `,
 
-    `This seems to be a forest. Looking around, you see some poplar trees and stone. There's a strange farmer-looking person sitting on the ground.
-    There's also a stream with what seems to be a small town up ahead, but the bridge seems to be broken.<br><br>
-    <button onclick="switchAction('chop2','woodcutting',3,2)">Chop a poplar tree (lvl 2 woodcutting required)</button>
-    <button onclick="switchAction('mine','mining',7)">Mine some stone</button></div>
-    <button onclick="switchAction('tin ore','mining',15,3)">Mine some tin ore (lvl 3 mining required)</button></div>
-    <button onclick="switchAction('iron ore','mining',20,10)">Mine some iron ore (lvl 10 mining required)</button></div>
-        <br><br>
-    <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge</button>
-        <br><br>
-    <button onclick="fightFarmer()" class="fight">Attack!</button>`,
+    `You enter a forest-looking place. You find a farmer sitting on the ground nearby one of the trees. It'll probably be a good idea to leave him.
+    The forest trees seem to be poplar trees and there's also some rocks here, some with ores. You'll probably need a pickaxe to break any rocks, though.
+    <br><br>
+
+    <div>
+    <button onclick="switchAction('poplar log','woodcutting',4,4)">Chop a poplar tree <span class='skill'>(Woodcutting 4)</span></button>
+    <button onclick="switchAction('mine','mining',4)">Mine some stone <span class='skill'>(Mining)</span></button></div>
+    <button onclick="switchAction('tin ore','mining',6,8)">Mine some tin ore <span class='skill'>(Mining 8)</span></button></div>
+    <button onclick="switchAction('iron ore','mining',10,20)">Mine some iron ore <span class='skill'>(Mining 20)</span></button></div>
+    <br><br>
+
+    <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge <span class='skill'>(undefined)</span></button>
+    <br><br>
+
+    <button onclick="fightFarmer()" class="fight">Attack!</button>
+    </div>
+    `,
     `Nothing here yet, except for a basic saving system<br><br>
-    <button onclick="exports()">Export Inventory</button>
-    <button onclick="imports()">Import Inventory</button> <textarea id="importArea" style="width:300px;"></textarea>
+    <button onclick="exports()">Export</button>
+    <button onclick="imports()">Import</button><br>
+    <textarea id="importArea" style="width:400px; height: 200px;"></textarea>
     `
 ], tooltips = {
-    "stone axe": "A simple stone axe, useful to chop wood.",
-    "stone pickaxe": "A simple stone pickaxe, useful to chop stone and ores.",
-    "tin axe": "A flimsy tin axe, useful to chop wood.<br>30% faster than a stone axe.",
-    "tin pickaxe": "A flimsy tin pickaxeaxe, useful to chop stone and ores.<br>30% faster than a stone pickaxe.",
-    "iron pickaxe": "A soft iron pickaxeaxe, useful to chop stone and ores.<br>70% faster than a stone pickaxe.",
+    //Tool
+    "stone pickaxe":"<span class='skill'>Tool</span><br>A simple stone pickaxe, useful to chop stone and ores.",
+    "tin axe":      "<span class='skill'>Tool</span><br>A flimsy tin axe, useful to chop wood.<br>30% faster than a stone axe.",
+    "tin axe":      "<span class='skill'>Tool</span><br>A soft tin axe, useful to chop wood.<br>70% faster than a stone axe.",
+    "stone axe":    "<span class='skill'>Tool</span><br>A simple stone axe, useful to chop wood.",
+    "tin pickaxe":  "<span class='skill'>Tool</span><br>A flimsy tin pickaxe, useful to chop stone and ores.<br>30% faster than a stone pickaxe.",
+    "iron pickaxe": "<span class='skill'>Tool</span><br>A soft iron pickaxe, useful to chop stone and ores.<br>70% faster than a stone pickaxe.",
 
-    "coin": "<em>This coin appears unusually observant...</em>",
-    "dirt ball": "<em>A bit of dirt, molded into a ball</em>",
+    //Miscellaneous
+    "coin":     "<span class='skill'>Miscellaneous</span><br><em>This coin appears unusually observant...</em>",
 },inventory = [],
-exp = {"woodcutting":0, "mining":0, "crafting":0, "forging": 0};
+consumableList = [
+    "red berry",
+    "blue berry",
+    "vanilla wafer",
+    "chocolate wafer",
+],
+exp = {"woodcutting":100, "mining":100, "crafting":100, "forging": 100, "gathering": 100},
+prevSwitch = ['dirt','mining',1,0];
 for(var i=0; i<54; i++) inventory.push(["empty", 0]);
 inventory[0] = ["stone axe", 1];
 
@@ -56,7 +75,7 @@ function imports() {
 
 function calculateLevel(experience) {
     return Math.max(0, Math.ceil(
-        Math.log10(experience/100) / 0.0607
+        Math.log10((experience+0.01)/100) / 0.0607
     ));
 }
 
@@ -71,13 +90,14 @@ function switchAction(act,type,timed=1,minLevel=0) {
             item = getBestItem("pickaxe");
             break;
         case "gathering":
-            item = getBestItem("shears");
+            item = getBestItem("shear");
             break;
         default:
             item = ["chisel", 0.8];
     }
  
     if((item[0] == 'empty') && (act !== "dirt")) return alert(`You need a tool that can do ${type} to do this action.`);
+    prevSwitch = [act,type,timed,minLevel]
 
     action = act;
     actionDescription =  " ~ " + act.charAt(0).toUpperCase() + act.slice(1) + " (" + type + ")";
@@ -90,6 +110,9 @@ function switchAction(act,type,timed=1,minLevel=0) {
     //calculateLevel(exp[type]) < minLevel
 
     maxTime = timed / item[1] / expMult;
+    if(maxTime < 1){
+        maxTime = maxTime**0.5
+    }
 }
 
 function fightFarmer() {
@@ -138,7 +161,7 @@ function updateInventory() {
             tooltip.style.visibility = 'hidden';
         } else {
             img.src = `assets/${inventory[i][0]}.png`
-            amount.innerHTML = inventory[i][1];
+            amount.innerHTML = Math.floor(inventory[i][1]);
             tooltip.innerHTML = `<span class='big'>${inventory[i][0].charAt(0).toUpperCase() + inventory[i][0].slice(1)}</span> <br> ${tooltips[inventory[i][0]] || ""}`;
             tooltip.style.visibility = 'visible';
         }
@@ -148,9 +171,10 @@ function updateInventory() {
     updateExpBar("mining");
     updateExpBar("crafting");
     updateExpBar("forging");
+    updateExpBar("gathering");
 }
 
-function addItem(type, amount, xp=10, acttype="mining") {
+function addItem(type, amount, xp=0, acttype="mining") {
     if(amount <= 0) return;
     let slot = inventory.find(item => item[0] === type);
 
@@ -162,7 +186,7 @@ function addItem(type, amount, xp=10, acttype="mining") {
         if (empty !== null) inventory[empty] = [type, amount];
     }
 
-    if(exp[acttype] !== undefined) {
+    if(exp[acttype] !== undefined && amount > 0) {
             exp[acttype] += xp;
     }
     updateInventory();
@@ -178,29 +202,41 @@ function findItemAmount(type){
 function doAction(type) {
     switch(type) {
         case "dirt":
-            addItem("dirt", rand(1,3),4);
-            addItem("stone", rand(0,1.5),0);
+            addItem("dirt", rand(1,2.5),4);
+            addItem("stone", rand(0,0.8), 2);
             break;
 
-        case "chop":
-            addItem("balsa log", rand(1,2),5,"woodcutting"); break;
+        case "stone shear":
+            addItem("stone shear", 1,4);
+            break;
 
-        case "chop2":
-            addItem("poplar log", rand(1,2),10,"woodcutting"); break;
+        case "balsa log":
+            addItem("balsa log", rand(1,2),7.5,"woodcutting"); break;
 
-        case "chop3":
-            addItem("poplar log", rand(3,6),20,"woodcutting");
+        case "berry":
+            addItem("red berry", rand(1,2),5,"gathering"); break;
+
+        case "poplar log":
+            addItem("poplar log", rand(1,2),15,"woodcutting"); break;
+
+        case "big poplar log":
+            addItem("poplar log", rand(4,6),30,"woodcutting");
             document.getElementById("woods").style.visibility = "visible";
             break;
 
+            //6, 10, 15
         case "mine":
-            addItem("stone", rand(2,5),30); break;
+            addItem("stone", rand(1.8,3.8),35); break;
 
         case "tin ore":
-            addItem("tin ore", rand(1,2),55); break;
+            addItem("stone", rand(1.8,3.8),60);
+            addItem("tin ore", rand(0,2.2), 10);
+            break;
 
         case "iron ore":
-            addItem("iron ore", rand(1,1.2),105); break;
+            addItem("stone", rand(1.8,3.8),80);
+            addItem("iron ore", rand(0,1.6),30);
+            break;
 
         case "stone pickaxe":
             if(findItemAmount("stone") >= 6 && findItemAmount("balsa log") >= 3) {
@@ -234,6 +270,22 @@ function doAction(type) {
             }
             break;
 
+        case "tin axe":
+            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5) {
+                addItem("tin axe", 1, 65, "crafting");
+                inventory.find(item => item[0] === "tin bar")[1] -= 8;
+                inventory.find(item => item[0] === "poplar log")[1] -= 5;
+            }
+            break;
+
+        case "iron axe":
+            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5) {
+                addItem("iron axe", 1, 65, "crafting");
+                inventory.find(item => item[0] === "iron bar")[1] -= 12;
+                inventory.find(item => item[0] === "poplar log")[1] -= 5;
+            }
+            break;
+
         case "tin bar":
             if(findItemAmount("tin ore") >= 3 && findItemAmount("poplar log") >= 2) {
                 addItem("tin bar", 2, 30, "forging");
@@ -249,9 +301,9 @@ function doAction(type) {
             }
             break;
         case "dirt ball":
-            if(findItemAmount("dirt") >= 12){
-                addItem("dirt ball", 1, 12, "crafting");
-                inventory.find(item => item[0] === "dirt")[1] -= 12;
+            if(findItemAmount("dirt") >= 16){
+                addItem("dirt ball", 1, 8, "crafting");
+                inventory.find(item => item[0] === "dirt")[1] -= 16;
             }
             break;
 
@@ -260,6 +312,7 @@ function doAction(type) {
     }
 
     updateInventory();
+    switchAction(prevSwitch[0],prevSwitch[1],prevSwitch[2],prevSwitch[3])
 }
 
 function tabButtonPressed(id) {
