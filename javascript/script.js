@@ -8,7 +8,7 @@ let htmlThings = [
 
     <div>
     <button onclick="switchAction('dirt','mining', 0.8)" id="digMound">Dig the mound <span class='skill'>(Mining)</span></button>
-    <button onclick="switchAction('dirt2','mining', 8)" id="digMound">Dig the huge mound <span class='skill'>(Mining)</span></button>
+    <button onclick="switchAction('dirt2','mining', 80)" id="digMound">Dig the huge mound <span class='skill'>(Mining)</span></button>
     <button onclick="switchAction('balsa log','woodcutting', 3)">Chop a balsa tree <span class='skill'>(Woodcutting)</span></button>
     <button onclick="switchAction('berry','gathering', 2)">Gather some berries <span class='skill'>(Gathering)</span></button>
         <br><br>
@@ -259,8 +259,8 @@ function doAction(type) {
             addItem("stone", rand(0,0.8), 2);
             break;
         case "dirt2":
-            addItem("dirt", rand(5,15),20);
-            addItem("stone", rand(0,8), 2);
+            addItem("dirt", rand(80,200),4);
+            addItem("stone", rand(0,80), 2);
             break;
 
         case "stone shear":
