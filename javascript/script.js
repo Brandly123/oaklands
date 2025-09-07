@@ -148,7 +148,7 @@ function getBestItem(type) {
     for (let tool of order) {
         let found = inventory.find(item => item[0] === (tool[0] + " " + type) && item[1] > 0);
         if (found) {
-            let enchantBuff = (found[2] || 0) * 0.1 + 1;
+            let enchantBuff = ((found[2] || 0) * 0.1 + 1)**1.4;
             let totalSpeed = tool[1] * enchantBuff;
             return [tool[0], totalSpeed];
         }
@@ -259,7 +259,8 @@ function doAction(type) {
             addItem("stone", rand(0,0.8), 2);
             break;
         case "dirt2":
-            addItem("dirt", rand(80,200),4);
+            addItem("dirt", rand(80,150),4);
+            addItem("dirt ball", rand(1,6),2);
             addItem("stone", rand(0,80), 2);
             break;
 
