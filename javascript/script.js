@@ -267,9 +267,9 @@ function doAction(type) {
             addItem("stone", rand(0,0.8), 2);
             break;
         case "dirt2":
-            addItem("dirt", rand(80,150),4);
-            addItem("dirt ball", rand(1,6),2);
-            addItem("stone", rand(0,80), 2);
+            addItem("dirt", 40,4);
+            addItem("dirt ball", rand(10,25),2);
+            addItem("stone", rand(0,50), 2);
             break;
 
         case "stone shear":
@@ -313,7 +313,7 @@ function doAction(type) {
 
         case "tin pickaxe":
             if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5 && findItemAmount("stone pickaxe") >= 1) {
-                addItem("tin pickaxe", 1, 195, "crafting");
+                addItem("tin pickaxe", 1, 300, "crafting");
                 inventory.find(item => item[0] === "stone pickaxe")[1] -= 1;
                 inventory.find(item => item[0] === "tin bar")[1] -= 8;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
@@ -322,7 +322,7 @@ function doAction(type) {
 
         case "iron pickaxe":
             if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("tin pickaxe") >= 1) {
-                addItem("iron pickaxe", 1, 390, "crafting");
+                addItem("iron pickaxe", 1, 800, "crafting");
                 inventory.find(item => item[0] === "tin pickaxe")[1] -= 1;
                 inventory.find(item => item[0] === "iron bar")[1] -= 12;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
@@ -339,7 +339,7 @@ function doAction(type) {
 
         case "tin axe":
             if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5 && findItemAmount("stone axe") >= 1) {
-                addItem("tin axe", 1, 195, "crafting");
+                addItem("tin axe", 1, 300, "crafting");
                 inventory.find(item => item[0] === "stone axe")[1] -= 1;
                 inventory.find(item => item[0] === "tin bar")[1] -= 8;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
@@ -348,7 +348,7 @@ function doAction(type) {
 
         case "iron axe":
             if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("iron axe") >= 1) {
-                addItem("iron axe", 1, 390, "crafting");
+                addItem("iron axe", 1, 800, "crafting");
                 inventory.find(item => item[0] === "iron axe")[1] -= 1;
                 inventory.find(item => item[0] === "iron bar")[1] -= 12;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
