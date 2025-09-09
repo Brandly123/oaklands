@@ -130,7 +130,11 @@ function switchAction(act,type,timed=1,minLevel=0) {
 
     maxTime = timed / item[1] / expMult;
     if(maxTime < 1){
-        maxTime = maxTime**0.8
+        if(type === "crafting"){
+            maxTime = maxTime ** 1
+        } else {
+            maxTime = maxTime**0.8
+        }
     }
 }
 
