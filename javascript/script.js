@@ -40,8 +40,8 @@ let htmlThings = [
         <span class="tempslotid">null</span>
     </button>
     <button id="enhance" onclick="enhance()">
-        Enhance for the cost of <span>1 dirt ball</span><br>
-        Success rate: <span id="enhanceCost">0</span>%
+        Enhance for the cost of <span id="enhancePrice">1 dirt ball</span><br>
+        Success rate: <span id="enhanceChance">0</span>%
     </button>
     `,
     `Nothing here yet, except for a basic saving system<br><br>
@@ -130,7 +130,7 @@ function switchAction(act,type,timed=1,minLevel=0) {
 
     maxTime = timed / item[1] / expMult;
     if(maxTime < 1){
-        maxTime = maxTime**0.5
+        maxTime = maxTime**0.8
     }
 }
 
@@ -148,7 +148,7 @@ function getBestItem(type) {
     for (let tool of order) {
         let found = inventory.find(item => item[0] === (tool[0] + " " + type) && item[1] > 0);
         if (found) {
-            let enchantBuff = ((found[2] || 0) * 0.1 + 1)**1.4;
+            let enchantBuff = ((found[2] || 0) * 0.1 + 1)**1.5;
             let totalSpeed = tool[1] * enchantBuff;
             return [tool[0], totalSpeed];
         }
@@ -196,7 +196,7 @@ function updateInventory() {
           //ok echo or brandly or someone ik this sucks but dont question it, ok?
         const temp = document.querySelectorAll(".tempslot")[0].querySelector(".tempslotid").innerHTML;
         const content = document.querySelectorAll(".tempslot")[0].querySelector(".tempslotcontent");
-        if(temp === null) return;
+        if( !inventory[temp] ) return;
         
         content.innerHTML = `${inventory[temp][0]} (*${temp}) x${inventory[temp][1]}`
     }
@@ -205,8 +205,11 @@ function updateInventory() {
     if(!enhanceButton) return;
     const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
     if(!enhanceSlotId) return;
-    const chance = Math.pow(0.7,inventory[enhanceSlotId][2])
-    document.getElementById("enhanceCost").innerHTML = (chance * 100).toFixed(2);
+    const chance = Math.pow(0.825,inventory[enhanceSlotId][2])
+    const price = Math.floor(Math.pow(inventory[enhanceSlotId][2]+1,1.2)/4+1)
+
+    document.getElementById("enhanceChance").innerHTML = (chance * 100).toFixed(2);
+    document.getElementById("enhancePrice").innerHTML = price + " dirt ball(s)";
 }
 function addItem(type, amount, xp=0, acttype="mining") {
     if(amount === 0) return;
@@ -235,9 +238,10 @@ function enhance(){
     if(!enhanceButton) return;
     const enhanceSlotId = document.querySelector("#enhanceSlot .tempslotid").innerHTML;
     if(!enhanceSlotId) return;
-    const chance = Math.pow(0.7,inventory[enhanceSlotId][2])
+    const chance = Math.pow(0.825,inventory[enhanceSlotId][2])
+    const price = Math.floor(Math.pow(inventory[enhanceSlotId][2]+1,1.2)/4+1)
 
-    if(addItem("dirt ball", -1) !== "no item")
+    if(addItem("dirt ball", -price) !== "no item")
         if(Math.random() <= chance) 
             inventory[enhanceSlotId][2]++
     
@@ -272,7 +276,7 @@ function doAction(type) {
             addItem("balsa log", rand(1,2),7.5,"woodcutting"); break;
 
         case "berry":
-            addItem("red berry", rand(1,2),5,"gathering"); break;
+            addItem("red berry", rand(1,2),10,"gathering"); break;
 
         case "poplar log":
             addItem("poplar log", rand(1,2),15,"woodcutting"); break;
@@ -282,7 +286,6 @@ function doAction(type) {
             document.getElementById("woods").style.visibility = "visible";
             break;
 
-            //6, 10, 15
         case "mine":
             addItem("stone", rand(1.8,3.8),35); break;
 
@@ -305,16 +308,18 @@ function doAction(type) {
             break;
 
         case "tin pickaxe":
-            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5) {
-                addItem("tin pickaxe", 1, 65, "crafting");
+            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5 && findItemAmount("stone pickaxe") >= 1) {
+                addItem("tin pickaxe", 1, 195, "crafting");
+                inventory.find(item => item[0] === "stone pickaxe")[1] -= 1;
                 inventory.find(item => item[0] === "tin bar")[1] -= 8;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
             break;
 
         case "iron pickaxe":
-            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5) {
-                addItem("iron pickaxe", 1, 65, "crafting");
+            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("tin pickaxe") >= 1) {
+                addItem("iron pickaxe", 1, 390, "crafting");
+                inventory.find(item => item[0] === "tin pickaxe")[1] -= 1;
                 inventory.find(item => item[0] === "iron bar")[1] -= 12;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
@@ -329,16 +334,18 @@ function doAction(type) {
             break;
 
         case "tin axe":
-            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5) {
-                addItem("tin axe", 1, 65, "crafting");
+            if(findItemAmount("tin bar") >= 8 && findItemAmount("poplar log") >= 5 && findItemAmount("stone axe") >= 1) {
+                addItem("tin axe", 1, 195, "crafting");
+                inventory.find(item => item[0] === "stone axe")[1] -= 1;
                 inventory.find(item => item[0] === "tin bar")[1] -= 8;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
             break;
 
         case "iron axe":
-            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5) {
-                addItem("iron axe", 1, 65, "crafting");
+            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("iron axe") >= 1) {
+                addItem("iron axe", 1, 390, "crafting");
+                inventory.find(item => item[0] === "iron axe")[1] -= 1;
                 inventory.find(item => item[0] === "iron bar")[1] -= 12;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
@@ -346,22 +353,22 @@ function doAction(type) {
 
         case "tin bar":
             if(findItemAmount("tin ore") >= 3 && findItemAmount("poplar log") >= 2) {
-                addItem("tin bar", 2, 30, "forging");
+                addItem("tin bar", 2, 60, "forging");
                 inventory.find(item => item[0] === "tin ore")[1] -= 3;
                 inventory.find(item => item[0] === "poplar log")[1] -= 2;
             }
             break;
         case "iron bar":
             if(findItemAmount("iron ore") >= 4 && findItemAmount("poplar log") >= 2) {
-                addItem("iron bar", 2, 50, "forging");
+                addItem("iron bar", 2, 100, "forging");
                 inventory.find(item => item[0] === "iron ore")[1] -= 4;
                 inventory.find(item => item[0] === "poplar log")[1] -= 2;
             }
             break;
         case "dirt ball":
-            if(findItemAmount("dirt") >= 16){
-                addItem("dirt ball", 1, 8, "crafting");
-                inventory.find(item => item[0] === "dirt")[1] -= 16;
+            if(findItemAmount("dirt") >= 12){
+                addItem("dirt ball", 1, 6, "crafting");
+                inventory.find(item => item[0] === "dirt")[1] -= 12;
             }
             break;
 
