@@ -112,7 +112,8 @@ function switchAction(act,type,timed=1,minLevel=0) {
             item = getBestItem("shear");
             break;
         case "crafting":
-            item = getBestItem("chisel") || ['chisel', 0.8];
+            item = getBestItem("chisel")
+            if(item[0] === "empty") item = ['chisel', 0.8];
             break;
         default:
             item = ["chisel", 0.8];
