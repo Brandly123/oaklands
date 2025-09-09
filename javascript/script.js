@@ -111,6 +111,9 @@ function switchAction(act,type,timed=1,minLevel=0) {
         case "gathering":
             item = getBestItem("shear");
             break;
+        case "crafting":
+            item = getBestItem("chisel") || ['chisel', 0.8];
+            break;
         default:
             item = ["chisel", 0.8];
     }
@@ -309,6 +312,9 @@ function doAction(type) {
                 inventory.find(item => item[0] === "stone")[1] -= 6;
                 inventory.find(item => item[0] === "balsa log")[1] -= 3;
             }
+            break;
+        case "stone chisel":
+            addItem("stone chisel", 1, 40, "crafting");
             break;
 
         case "tin pickaxe":
