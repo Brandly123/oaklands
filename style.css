@@ -18,6 +18,7 @@ button {
     min-height: 35px;
     margin: 3px;
     padding: 2px;
+    touch-action: manipulation;
 }
 button:hover {
     background-color: #C7C7C7;
