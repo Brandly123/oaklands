@@ -25,6 +25,8 @@ let htmlThings = [
     <button onclick="switchAction('mine','mining',4)">Mine some stone <span class='skill'>(Mining)</span></button></div>
     <button onclick="switchAction('tin ore','mining',6,8)">Mine some tin ore <span class='skill'>(Mining 8)</span></button></div>
     <button onclick="switchAction('iron ore','mining',10,20)">Mine some iron ore <span class='skill'>(Mining 20)</span></button></div>
+    <button onclick="switchAction('copper ore','mining',10,20)">Mine some coppper ore <span class='skill'>(Mining 30)</span></button></div>
+    <button onclick="switchAction('gold ore','mining',20,20)">Mine some gold ore <span class='skill'>(Mining 35)</span></button></div>
     <br><br>
 
     <button onclick="switchAction('dirt','temporary',2)">(Placeholder Button) Repair the bridge <span class='skill'>(undefined)</span></button>
@@ -57,6 +59,7 @@ let htmlThings = [
     "stone axe":    "<span class='skill'>Tool</span><br>A simple stone axe, useful to chop wood.",
     "tin pickaxe":  "<span class='skill'>Tool</span><br>A flimsy tin pickaxe, useful to chop stone and ores.<br>30% faster than a stone pickaxe.",
     "iron pickaxe": "<span class='skill'>Tool</span><br>A soft iron pickaxe, useful to chop stone and ores.<br>60% faster than a stone pickaxe.",
+    "bronze pickaxe": "<span class='skill'>Tool</span><br>A stong pickaxe, useful to chop stone and ores<br>75% faster than a stone pickaxe",
 
     //Miscellaneous
     "coin":     "<span class='skill'>Miscellaneous</span><br><em>This coin appears unusually observant...</em>",
@@ -147,16 +150,17 @@ function fightFarmer() {
     addItem("coin", rand(2,5), 0)
 }
 const order = [
-    ["iron",1.6],
-    ["tin",1.3],
-    ["stone",1.0]
+    ["bronze",1.75,0.6],
+    ["iron",1.6,0.2],
+    ["tin",1.3,0],
+    ["stone",1.0,0]
 ];
 
 function getBestItem(type) {
     for (let tool of order) {
         let found = inventory.find(item => item[0] === (tool[0] + " " + type) && item[1] > 0);
         if (found) {
-            let enchantBuff = ((found[2] || 0) * 0.1 + 1)**1.5;
+            let enchantBuff = ((found[2] || 0) * (0.08 * (tool[2]+1)) + 1)**(1.2+tool[2]);
             let totalSpeed = tool[1] * enchantBuff;
             return [tool[0], totalSpeed];
         }
@@ -306,6 +310,14 @@ function doAction(type) {
             addItem("stone", rand(1.8,3.8),80);
             addItem("iron ore", rand(0,1.6),30);
             break;
+        case "copper ore":
+            addItem("stone", rand(1.8,3.8),90);
+            addItem("copper ore", rand(0,1),30);
+            break;
+        case "gold ore":
+            addItem("stone", rand(1.8,3.8),200);
+            addItem("gold ore", rand(0,0.6),100);
+            break;
 
         case "stone pickaxe":
             if(findItemAmount("stone") >= 6 && findItemAmount("balsa log") >= 3) {
@@ -335,6 +347,13 @@ function doAction(type) {
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
             break;
+        case "bronze pickaxe":
+            if(findItemAmount("bronze bar") >= 20 && findItemAmount("iron pickaxe") >= 1) {
+                addItem("bronze pickaxe", 1, 3000, "crafting");
+                inventory.find(item => item[0] === "iron pickaxe")[1] -= 1;
+                inventory.find(item => item[0] === "bronze bar")[1] -= 20;
+            }
+            break;
 
         case "stone axe":
             if(findItemAmount("stone") >= 5 && findItemAmount("balsa log") >= 4) {
@@ -354,9 +373,9 @@ function doAction(type) {
             break;
 
         case "iron axe":
-            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("iron axe") >= 1) {
+            if(findItemAmount("iron bar") >= 12 && findItemAmount("poplar log") >= 5 && findItemAmount("tin axe") >= 1) {
                 addItem("iron axe", 1, 800, "crafting");
-                inventory.find(item => item[0] === "iron axe")[1] -= 1;
+                inventory.find(item => item[0] === "tin axe")[1] -= 1;
                 inventory.find(item => item[0] === "iron bar")[1] -= 12;
                 inventory.find(item => item[0] === "poplar log")[1] -= 5;
             }
@@ -374,6 +393,27 @@ function doAction(type) {
                 addItem("iron bar", 2, 100, "forging");
                 inventory.find(item => item[0] === "iron ore")[1] -= 4;
                 inventory.find(item => item[0] === "poplar log")[1] -= 2;
+            }
+            break;
+        case "copper bar":
+            if(findItemAmount("copper ore") >= 4 && findItemAmount("poplar log") >= 2) {
+                addItem("copper bar", 1, 150, "forging");
+                inventory.find(item => item[0] === "copper ore")[1] -= 4;
+                inventory.find(item => item[0] === "poplar log")[1] -= 2;
+            }
+            break;
+        case "gold bar":
+            if(findItemAmount("gold ore") >= 4 && findItemAmount("poplar log") >= 2) {
+                addItem("gold bar", 1, 200, "forging");
+                inventory.find(item => item[0] === "gold ore")[1] -= 4;
+                inventory.find(item => item[0] === "poplar log")[1] -= 2;
+            }
+            break;
+        case "bronze bar":
+            if(findItemAmount("gold bar") >= 3 && findItemAmount("copper bar") >= 3) {
+                addItem("bronze bar", 2, 400, "forging");
+                inventory.find(item => item[0] === "copper bar")[1] -= 3;
+                inventory.find(item => item[0] === "gold bar")[1] -= 3;
             }
             break;
         case "dirt ball":
